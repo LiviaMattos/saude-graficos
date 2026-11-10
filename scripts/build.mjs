@@ -244,6 +244,7 @@ svg{width:100%;height:auto;display:block;overflow:visible}
 .pt{stroke:var(--card);stroke-width:1.5}.pt.ok{fill:var(--ok)}.pt.low{fill:var(--low)}.pt.high{fill:var(--high)}.pt.none{fill:var(--line)}
 .val{font-size:10px;fill:var(--ink)}.val.strong{font-weight:600}.date{font-size:10px;fill:var(--muted)}
 .legend{color:var(--muted);font-size:12px;margin-top:16px}
+.legend .ok{color:var(--ok)}.legend .low{color:var(--low)}.legend .high{color:var(--high)}
 .hidden{display:none}
 </style>
 </head>
@@ -252,7 +253,7 @@ svg{width:100%;height:auto;display:block;overflow:visible}
 <p class="sub">Atualizado em ${esc(geradoEm)} · faixa verde = referência do laudo</p>
 <div class="chips" role="group" aria-label="Filtrar por grupo">${chips}</div>
 ${sections || "<p>Nenhum dado encontrado.</p>"}
-<p class="legend">● verde dentro da referência · ● vermelho abaixo · ● laranja acima</p>
+<p class="legend"><span class="ok">●</span> verde dentro da referência · <span class="low">●</span> vermelho abaixo · <span class="high">●</span> laranja acima</p>
 <script>
 (function(){
   var q = new URLSearchParams(location.search);
