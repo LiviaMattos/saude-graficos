@@ -91,14 +91,47 @@ function chartSvg(pts, refMin, refMax) {
     band = `<rect class="band" x="${L}" y="${yTop}" width="${W - L - R}" height="${Math.max(0, yBot - yTop)}" rx="3"/>`;
   }
   const path = pts.map((p, i) => `${i ? "L" : "M"}${x(p.data).toFixed(1)},${y(p.valor).toFixed(1)}`).join(" ");
-  const dots = pts.map((p, i) => {
+  // Rótulos sem sobreposição: escolhe por prioridade (último, primeiro, máx., mín., depois do
+  // mais recente ao mais antigo) e pula o que encostaria num rótulo já colocado.
+  const n = pts.length;
+  const P = pts.map((p, i) => ({ p, i, cx: x(p.data), cy: y(p.valor) }));
+  const order = [n - 1, 0];
+  const byVal = [...P].sort((a, b) => a.p.valor - b.p.valor);
+  order.push(byVal.at(-1).i, byVal[0].i);
+  for (let i = n - 2; i > 0; i--) order.push(i);
+  const seen = new Set(), prio = order.filter((i) => !seen.has(i) && seen.add(i));
+  const CW = 5.6; // largura média de um caractere a 10px
+  const box = (cx, w, anchor, top, h) => {
+    const x0 = anchor === "start" ? cx : anchor === "end" ? cx - w : cx - w / 2;
+    return { x0: x0 - 2, x1: x0 + w + 2, y0: top, y1: top + h };
+  };
+  const hit = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+  const anchorOf = (i, cx, w) => (n === 1 ? "middle" : cx - w / 2 < 0 ? "start" : cx + w / 2 > W ? "end" : "middle");
+  const valBoxes = [], dateBoxes = [], valShow = new Map(), dateShow = new Map();
+  // pontos também contam como obstáculo para os rótulos de valor
+  const dotBoxes = P.map((q) => ({ x0: q.cx - 4, x1: q.cx + 4, y0: q.cy - 4, y1: q.cy + 4 }));
+  for (const i of prio) {
+    const q = P[i], t = fmt(q.p.valor), w = t.length * CW;
+    const a = anchorOf(i, q.cx, w);
+    // tenta acima; se não couber, abaixo do ponto
+    for (const top of [q.cy - 17, q.cy + 6]) {
+      if (top < 0 || top + 10 > H - B + 2) continue;
+      const b = box(q.cx, w, a, top, 10);
+      if (valBoxes.some((o) => hit(o, b)) || dotBoxes.some((o, j) => j !== i && hit(o, b))) continue;
+      valBoxes.push(b); valShow.set(i, { a, yText: top + 8.5 }); break;
+    }
+    const d = fmtData(q.p.data), dw = d.length * CW;
+    const da = anchorOf(i, q.cx, dw);
+    const db = box(q.cx, dw, da, H - 15, 10);
+    if (!dateBoxes.some((o) => hit(o, db))) { dateBoxes.push(db); dateShow.set(i, da); }
+  }
+  const dots = P.map(({ p, i, cx, cy }) => {
     const st = status(p.valor, refMin, refMax);
-    const last = i === pts.length - 1;
-    const cx = x(p.data).toFixed(1), cy = y(p.valor).toFixed(1);
-    const anchor = pts.length === 1 ? "middle" : i === 0 ? "start" : last ? "end" : "middle";
-    return `<circle class="pt ${st}${last ? " last" : ""}" cx="${cx}" cy="${cy}" r="${last ? 4.5 : 3.5}"><title>${fmtDataLonga(p.data)}: ${fmt(p.valor)}</title></circle>` +
-      `<text class="val" x="${cx}" y="${(+cy - 8).toFixed(1)}" text-anchor="${anchor}">${fmt(p.valor)}</text>` +
-      `<text class="date" x="${cx}" y="${H - 6}" text-anchor="${anchor}">${fmtData(p.data)}</text>`;
+    const last = i === n - 1;
+    const v = valShow.get(i), da = dateShow.get(i);
+    return `<circle class="pt ${st}${last ? " last" : ""}" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${last ? 4.5 : 3.5}"><title>${fmtDataLonga(p.data)}: ${fmt(p.valor)}</title></circle>` +
+      (v ? `<text class="val${last ? " strong" : ""}" x="${cx.toFixed(1)}" y="${v.yText.toFixed(1)}" text-anchor="${v.a}">${fmt(p.valor)}</text>` : "") +
+      (da ? `<text class="date" x="${cx.toFixed(1)}" y="${H - 6}" text-anchor="${da}">${fmtData(p.data)}</text>` : "");
   }).join("");
   return `<svg viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="xMidYMid meet">${band}<path class="line" d="${path}"/>${dots}</svg>`;
 }
@@ -175,7 +208,7 @@ svg{width:100%;height:auto;display:block;overflow:visible}
 .band{fill:var(--band)}
 .line{fill:none;stroke:var(--line);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
 .pt{stroke:var(--card);stroke-width:1.5}.pt.ok{fill:var(--ok)}.pt.low{fill:var(--low)}.pt.high{fill:var(--high)}.pt.none{fill:var(--line)}
-.val{font-size:10px;fill:var(--ink)}.date{font-size:10px;fill:var(--muted)}
+.val{font-size:10px;fill:var(--ink)}.val.strong{font-weight:600}.date{font-size:10px;fill:var(--muted)}
 .legend{color:var(--muted);font-size:12px;margin-top:16px}
 .hidden{display:none}
 </style>
