@@ -1,0 +1,51 @@
+<!doctype html><html><head><style>html,body{margin:0;padding:0}svg{display:block}</style></head><body>
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="600" viewBox="0 0 1500 600">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#EAF4EE"/><stop offset="0.55" stop-color="#F6F3EC"/><stop offset="1" stop-color="#F7E9E4"/>
+  </linearGradient>
+  <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+    <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.9"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="heart" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#F2A99A"/><stop offset="1" stop-color="#E07A6C"/>
+  </linearGradient>
+  <g id="leaf"><path d="M0 0 C 18 -30, 58 -36, 90 -20 C 60 6, 22 12, 0 0 Z"/><path d="M0 0 C 30 -10, 60 -16, 88 -20" fill="none" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="2"/></g>
+</defs>
+<rect width="1500" height="600" fill="url(#bg)"/>
+<!-- soft blobs -->
+<circle cx="160" cy="470" r="260" fill="#CFE6D8" opacity="0.55"/>
+<circle cx="1380" cy="110" r="230" fill="#F4D3CA" opacity="0.5"/>
+<circle cx="1260" cy="560" r="170" fill="#D9EADF" opacity="0.6"/>
+<circle cx="330" cy="70" r="120" fill="#F5E3D6" opacity="0.6"/>
+<ellipse cx="750" cy="300" rx="340" ry="240" fill="url(#glow)"/>
+<!-- gentle waves -->
+<path d="M0 470 C 250 420, 450 530, 750 480 S 1250 420, 1500 470 L1500 600 L0 600 Z" fill="#BFDCCB" opacity="0.45"/>
+<path d="M0 520 C 300 480, 520 580, 800 535 S 1300 490, 1500 530 L1500 600 L0 600 Z" fill="#A9CFB9" opacity="0.4"/>
+<!-- heartbeat line across -->
+<path d="M120 300 H 450 l 22 -34 l 26 78 l 30 -150 l 30 186 l 24 -110 l 18 30 H 700" fill="none" stroke="#7FB59A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+<path d="M800 300 H 1380" fill="none" stroke="#7FB59A" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+<circle cx="120" cy="300" r="7" fill="#7FB59A" opacity="0.6"/><circle cx="1380" cy="300" r="7" fill="#7FB59A" opacity="0.6"/>
+<!-- central heart with leaves -->
+<g transform="translate(750 300)">
+  <circle r="92" fill="#FFFFFF" opacity="0.85"/>
+  <circle r="92" fill="none" stroke="#E9C9BF" stroke-width="2"/>
+  <path d="M0 42 C -60 4, -62 -40, -32 -48 C -14 -53, -2 -40, 0 -30 C 2 -40, 14 -53, 32 -48 C 62 -40, 60 4, 0 42 Z" fill="url(#heart)"/>
+  <path d="M-30 -6 h 14 l 7 -14 l 10 28 l 8 -14 h 21" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#8CC3A5"><use href="#leaf" transform="translate(-70 62) rotate(-205) scale(0.62)"/><use href="#leaf" transform="translate(70 62) rotate(25) scale(0.62) scale(1 -1)"/></g>
+</g>
+<!-- scattered leaves -->
+<g fill="#9DCBB0" opacity="0.8">
+  <use href="#leaf" transform="translate(240 190) rotate(-25) scale(0.9)"/>
+  <use href="#leaf" transform="translate(300 230) rotate(15) scale(0.6)"/>
+  <use href="#leaf" transform="translate(1180 410) rotate(-160) scale(0.85)"/>
+  <use href="#leaf" transform="translate(1120 380) rotate(160) scale(0.55)"/>
+</g>
+<!-- tiny sparkles / dots -->
+<g fill="#E9A99B" opacity="0.7">
+  <circle cx="470" cy="160" r="5"/><circle cx="1030" cy="190" r="4"/><circle cx="980" cy="430" r="6"/><circle cx="520" cy="420" r="4"/><circle cx="1240" cy="230" r="5"/>
+</g>
+<g fill="#8CC3A5" opacity="0.7">
+  <circle cx="420" cy="380" r="4"/><circle cx="1080" cy="140" r="5"/><circle cx="620" cy="150" r="3"/><circle cx="900" cy="470" r="4"/>
+</g>
+</svg></body></html>
