@@ -137,6 +137,38 @@ function chartSvg(pts, refMin, refMax) {
 }
 
 // ---------- página ----------
+// Explicação curta de cada marcador (aparece abaixo do nome no card)
+const DESC = {
+  "Hemoglobina": "Proteína dos glóbulos vermelhos que leva oxigênio; baixa indica anemia",
+  "Hematócrito": "Porcentagem do sangue ocupada pelos glóbulos vermelhos",
+  "VCM": "Volume Corpuscular Médio: tamanho médio dos glóbulos vermelhos",
+  "HCM": "Hemoglobina Corpuscular Média: quantidade de hemoglobina em cada glóbulo vermelho",
+  "CHCM": "Concentração de Hemoglobina Corpuscular Média",
+  "RDW": "Variação de tamanho entre os glóbulos vermelhos",
+  "Leucócitos": "Glóbulos brancos, células de defesa do corpo",
+  "Plaquetas": "Células que ajudam na coagulação do sangue",
+  "Glicose": "Açúcar no sangue em jejum",
+  "Hemoglobina glicada": "HbA1c: média do açúcar no sangue nos últimos 3 meses",
+  "Colesterol total": "Soma de todas as frações de colesterol",
+  "LDL": "Lipoproteína de baixa densidade: o colesterol \"ruim\"",
+  "HDL": "Lipoproteína de alta densidade: o colesterol \"bom\"",
+  "Triglicérides": "Gordura no sangue que vem da alimentação e do fígado",
+  "Ferro": "Ferro circulando no sangue",
+  "Ferritina": "Estoque de ferro do corpo",
+  "Vitamina B12": "Vitamina importante para os nervos e a produção de sangue",
+  "Vitamina D": "Vitamina dos ossos e da imunidade, produzida com o sol",
+  "Vitamina C": "Vitamina antioxidante, importante para a imunidade",
+  "TSH": "Hormônio Tireoestimulante: comando do cérebro para a tireoide",
+  "T3": "Tri-iodotironina: hormônio ativo da tireoide",
+  "T4 livre": "Tiroxina livre: hormônio da tireoide disponível para uso",
+  "T4 total": "Tiroxina total: todo o hormônio T4 no sangue",
+  "TGO": "Transaminase Glutâmico-Oxalacética (AST): enzima do fígado e músculos",
+  "TGP": "Transaminase Glutâmico-Pirúvica (ALT): enzima do fígado",
+  "GGT": "Gama-Glutamil Transferase: enzima do fígado e vias biliares",
+  "Creatinina": "Resíduo dos músculos filtrado pelos rins; mostra a função renal",
+  "Ureia": "Resíduo de proteínas filtrado pelos rins",
+};
+
 function card(nome, pts) {
   pts.sort((a, b) => a.data.localeCompare(b.data));
   const last = pts.at(-1), prev = pts.at(-2);
@@ -154,6 +186,7 @@ function card(nome, pts) {
   const refTxt = refMin != null && refMax != null ? `ref. ${fmt(refMin)}–${fmt(refMax)}` : refMin != null ? `ref. ≥ ${fmt(refMin)}` : refMax != null ? `ref. < ${fmt(refMax)}` : "";
   return `<article class="card" data-m="${esc(nome)}">
   <header><h3>${esc(nome)}</h3><span class="badge ${st}">${stLabel}</span></header>
+  ${DESC[nome] ? `<p class="desc">${esc(DESC[nome])}</p>` : ""}
   <p class="now"><strong>${fmt(last.valor)}</strong> <span>${esc(last.unidade)}</span></p>
   <p class="meta">${esc(trend)}${refTxt ? ` · ${esc(refTxt)}` : ""}</p>
   ${chartSvg(pts, refMin, refMax)}
@@ -203,6 +236,7 @@ h3{font-size:14px;margin:0}
 .badge{font-size:11px;padding:2px 8px;border-radius:999px;white-space:nowrap;color:#fff}
 .badge.ok{background:var(--ok)}.badge.low{background:var(--low)}.badge.high{background:var(--high)}.badge.none{background:var(--none)}
 .now{margin:6px 0 0}.now strong{font-size:22px}.now span{color:var(--muted)}
+.desc{margin:2px 0 0;color:var(--muted);font-size:11px;line-height:1.35}
 .meta{margin:0 0 4px;color:var(--muted);font-size:12px}
 svg{width:100%;height:auto;display:block;overflow:visible}
 .band{fill:var(--band)}
@@ -210,6 +244,7 @@ svg{width:100%;height:auto;display:block;overflow:visible}
 .pt{stroke:var(--card);stroke-width:1.5}.pt.ok{fill:var(--ok)}.pt.low{fill:var(--low)}.pt.high{fill:var(--high)}.pt.none{fill:var(--line)}
 .val{font-size:10px;fill:var(--ink)}.val.strong{font-weight:600}.date{font-size:10px;fill:var(--muted)}
 .legend{color:var(--muted);font-size:12px;margin-top:16px}
+.legend .ok{color:var(--ok)}.legend .low{color:var(--low)}.legend .high{color:var(--high)}
 .hidden{display:none}
 </style>
 </head>
@@ -218,7 +253,7 @@ svg{width:100%;height:auto;display:block;overflow:visible}
 <p class="sub">Atualizado em ${esc(geradoEm)} · faixa verde = referência do laudo</p>
 <div class="chips" role="group" aria-label="Filtrar por grupo">${chips}</div>
 ${sections || "<p>Nenhum dado encontrado.</p>"}
-<p class="legend">● verde dentro da referência · ● vermelho abaixo · ● laranja acima</p>
+<p class="legend"><span class="ok">●</span> verde dentro da referência · <span class="low">●</span> vermelho abaixo · <span class="high">●</span> laranja acima</p>
 <script>
 (function(){
   var q = new URLSearchParams(location.search);
